@@ -3,10 +3,24 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var productList = [];
+var productQTYs = [];
 
 console.log("BAMAZON CLIENT");
 console.log("All of the items are based on Home Depot Items and Store SKU's.");
-
+console.log("");
+console.log("░░░░░░░░░░░░░░░░░░░░");
+console.log("░░░░░░▄▀▀▄▀▀▄░░░░░░░");
+console.log("░░░░░█▒▄░▄░░▒█▄▄▄░░░");
+console.log("░░░▄▄█░▀░▀░░░█▄▓▓█░░");
+console.log("░▄▀▒▒▒▀▄▀▄▄▄▀▒▒▀█▓▄");
+console.log("▄▀▀▒▀▒▒▒▒▒░░░▒▒▒█▓▓█");
+console.log("█▒▒▒▒▒▒▒▒▄░░░░▒▒██▀");
+console.log("▀▄▒▒▒▒▒▒▒█▀░░▒▄█▄▀░░");
+console.log("░░▀▀▄▄▄▄█▄░░▒▒▀▄█▄▄░");
+console.log("");
+console.log("Brought to You By");
+console.log("Yoshiiiiiiiiiiiiiii!");
+console.log("");
 console.log("Establishing Connection...");
 
 var connection = mysql.createConnection({
@@ -26,53 +40,66 @@ connection.connect(function(err) {
 	console.log("Connected!");
 	connection.query("SELECT * FROM products", function(err, result, fields) {
 		if (err) throw err;
-		console.log(result);
+//		console.log(result);
 		for (var i = 0; i < result.length; i++) {
-			console.log("SKU: " + result[i].item_id + " | PDCT: " + result[i].product_name + " | DPT: " + result[i].department_name + " | PC: $" + result[i].price + " | QTY AVAIL: " + result[i].stock_quantity);
+//			console.log("SKU: " + result[i].item_id + " | PDCT: " + result[i].product_name + " | DPT: " + result[i].department_name + " | PC: $" + result[i].price + " | QTY AVAIL: " + result[i].stock_quantity);
+			console.log("");
+			console.log("====================================");
+			console.log("");
+			console.log("SKU #: " + result[i].item_id);
+			console.log("PRDCT: " + result[i].product_name);
+			console.log("DEPMT: " + result[i].department_name);
+			console.log("PRICE: " + result[i].price);
+			console.log("QOH #: " + result[i].stock_quantity);
+			console.log("");
+			console.log("====================================");
 			productList.push(result[i].product_name);
+			productQTYs.push(result[i].stock_quantity);
 		}
-//		connection.release();
+//		connection.destroy();
+		inquirer.prompt([
+			{
+				name: "whatIDo",
+				type: "list",
+				message: "What do you want to buy?",
+				choices: productList
+			},
+			{
+				name: "HowMany",
+				type: "input",
+				message: "How Many?"
+			}
+		])
+		.then(function(resp) {
+			console.log("You want " + resp.HowMany + " of " + resp.whatIDo + ".");
+			var indexer = resp.whatIDo;
+			var itemIndex = productList.indexOf(indexer);
+			var itemCost = result[itemIndex].price;
+			var storeQTYIndex = result[itemIndex].stock_quantity;
+			var multiplier = parseInt(resp.HowMany);
+			var itemTotal = itemCost * multiplier;
+			var bringTableDown = storeQTYIndex - multiplier;
+			console.log("They are $" + itemCost + " per/.");
+			console.log("This will cost $" + itemTotal + ".");
+			console.log("");
+			console.log("Now checking to see if the store has enough...");
+			if (storeQTYIndex < multiplier) {
+				console.log("");
+				console.log("Too bad. They don't have enough.");
+				connection.destroy();
+			}
+			else {
+				console.log("");
+				console.log("Good news! We have enough!");
+				console.log("Now communicating with the store database...");
+				console.log("");
+				var calzone = "UPDATE `bamazon`.`products` SET `stock_quantity`='" + bringTableDown + "' WHERE `product_name`='" + indexer + "'";
+				connection.query(calzone, function(err, result, fields) {
+					if (err) throw err;
+					console.log("Your order is complete.");
+					connection.destroy();
+				});
+			}
+		});
 	});
-	;
 });
-
-// item_id, product_name, department_name, price, stock_quantity
-
-//function lookUpItem(result) {
-//	getItems();
-//	inquirer.prompt({
-//		name: "action",
-//		type: "list",
-//		message: "What do you want to buy?",
-//		choices: productList
-//	})
-//	.then(function(result) {
-//		buyItem();
-//	});
-//}
-//
-//function buyItem() {
-//	inquirer.prompt({
-//		name: "buyAmt",
-//		type: "input",
-//		message: "How many do you want to buy? NUMBER ONLY"
-//	})
-//	.then(function(err) {
-//		if (err) {
-//			console.log("Error in Item Purchase. Terminating connection");
-//			connection.destroy();
-//			console.log("");
-//			
-//		}
-//		console.log("You want " + user.buyAmt + " " + "PLACE ITEM TAG HERE");
-//		console.log("");
-//		console.log("Placing order...");
-//		console.log("");
-//		console.log("Done! But I don't like it---")
-//		console.log("You have " + user.buyAmt + " " + "PLACE ITEM TAG HERE" + " coming to su casa.");
-//	})
-//}
-//getItems();
-//connection.end(function(err) {
-//	console.log("Connection Ended. Thanks for fake-shopping with us.")
-//});
