@@ -8,19 +8,6 @@ var productQTYs = [];
 console.log("BAMAZON CLIENT");
 console.log("All of the items are based on Home Depot Items and Store SKU's.");
 console.log("");
-console.log("░░░░░░░░░░░░░░░░░░░░");
-console.log("░░░░░░▄▀▀▄▀▀▄░░░░░░░");
-console.log("░░░░░█▒▄░▄░░▒█▄▄▄░░░");
-console.log("░░░▄▄█░▀░▀░░░█▄▓▓█░░");
-console.log("░▄▀▒▒▒▀▄▀▄▄▄▀▒▒▀█▓▄");
-console.log("▄▀▀▒▀▒▒▒▒▒░░░▒▒▒█▓▓█");
-console.log("█▒▒▒▒▒▒▒▒▄░░░░▒▒██▀");
-console.log("▀▄▒▒▒▒▒▒▒█▀░░▒▄█▄▀░░");
-console.log("░░▀▀▄▄▄▄█▄░░▒▒▀▄█▄▄░");
-console.log("");
-console.log("Brought to You By");
-console.log("Yoshiiiiiiiiiiiiiii!");
-console.log("");
 console.log("Establishing Connection...");
 
 var connection = mysql.createConnection({
